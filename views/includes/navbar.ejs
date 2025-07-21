@@ -39,8 +39,11 @@
       </div>
 
       <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2 search-inp" type="search" placeholder="Search destination"/>
+        <form class="d-flex" role="search" action="/listings" method="GET">
+          <div class="search-container position-relative">
+            <input class="form-control me-2 search-input" type="search" name="q" placeholder="Search destination" value="<%= typeof queryTerm !== 'undefined' ? queryTerm : '' %>"/>
+            <ul id="autocomplete-list" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+          </div>
           <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
         </form>
       </div>
@@ -58,3 +61,52 @@
     </div>
   </div>
 </nav>
+
+<script>
+  const searchInput = document.querySelector(".search-input");
+  const autocompleteList = document.querySelector("#autocomplete-list");
+
+  if (searchInput && autocompleteList) {
+  searchInput.addEventListener("input", async () => {
+    const query = searchInput.value.trim();
+
+    if (!query) {
+      autocompleteList.style.display = "none";
+      autocompleteList.innerHTML = "";
+      return;
+    }
+
+    const res = await fetch(`/listings/autocomplete?q=${encodeURIComponent(query)}`);
+    const listings = await res.json();
+
+    if (listings.length === 0) {
+      autocompleteList.style.display = "none";
+      autocompleteList.innerHTML = "";
+      return;
+    }
+
+    autocompleteList.innerHTML = "";
+    listings.forEach(listing => {
+      const li = document.createElement("li");
+      li.classList.add("list-group-item", "list-group-item-action");
+      li.textContent = `${listing.title} – ${listing.location}, ${listing.country}`;
+      li.addEventListener("click", () => {
+        searchInput.value = `${listing.title} – ${listing.location}, ${listing.country}`;
+        autocompleteList.innerHTML = "";
+        autocompleteList.style.display = "none";
+      });
+      autocompleteList.appendChild(li);
+    });
+
+    autocompleteList.style.display = "block";
+  });
+
+  // Hide list when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!document.querySelector(".search-container").contains(e.target)) {
+      autocompleteList.innerHTML = "";
+      autocompleteList.style.display = "none";
+    }
+  });
+}
+</script>

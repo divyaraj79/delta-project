@@ -23,13 +23,27 @@
             </div>
                     
             <div class="mb-3">
-                <label for="image" class="form-label">Upload Listing Image</label>
+                <label for="images" class="form-label">Upload Listing Image</label>
                 <input 
-                    name="listing[image]"
+                    name="listing[images]"
                     type="file" 
                     class="form-control"
+                    multiple
                 />
-                required
+            </div>
+
+            <div class="mb-3">
+            <label for="filter" class="form-label">Filter Category (Optional)</label>
+            <select name="listing[filter]" class="form-select">
+                <option value="">-- None --</option>
+                <option value="Trending">Trending</option>
+                <option value="Mountains">Mountains</option>
+                <option value="Lakefront">Lakefront</option>
+                <option value="Tropical">Tropical</option>
+                <option value="Arctic">Arctic</option>
+                <option value="Desert">Desert</option>
+                <option value="Iconic cities">Iconic cities</option>
+            </select>
             </div>
                    
             <div class="row">
@@ -73,3 +87,5 @@
         </form>
     </div>
 </div>
+
+<script src="/js/new.js"></script>

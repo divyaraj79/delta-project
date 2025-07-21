@@ -19,6 +19,7 @@ const User = require("./models/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const multer = require("multer");
 
 // const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 const dbUrl = process.env.ATLASDB_URL;
@@ -37,8 +38,8 @@ async function main(){
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({ extended : true }));
 app.use(methodOverride("_method"));
+app.use(express.urlencoded({ extended : true }));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
@@ -105,14 +106,43 @@ app.use("/", userRouter);
 //     next(new ExpressError(404, "Page Not Found!"));
 // });
 
-app.use((req, res, next) => {
-    next(new ExpressError(404, "Page Not Found!"));
+app.use((err, req, res, next) => {
+    const { statusCode = 500 } = err;
+
+    // 🔥 Multer: too many images
+    if (err instanceof multer.MulterError) {
+        if (err.code === "LIMIT_UNEXPECTED_FILE") {
+            req.flash("error", "You cannot upload more than 10 images.");
+
+            // Redirect based on source route
+            if (req.originalUrl.includes("/edit")) {
+                const id = req.params?.id || req.body?.id || "";
+                return res.redirect(`/listings/${id}/edit`);
+            }
+            return res.redirect("/listings/new");
+        }
+
+        req.flash("error", err.message);
+        return res.redirect("/listings/new");
+    }
+
+    // 🔥 ExpressError (custom validation error)
+    if (err instanceof ExpressError) {
+        req.flash("error", err.message || "Validation failed.");
+        if (req.originalUrl.includes("/edit")) {
+            const id = req.params?.id || req.body?.id || "";
+            return res.redirect(`/listings/${id}/edit`);
+        }
+        return res.redirect("/listings/new");
+    }
+
+    // 🔥 Unknown error
+    const message = err.message || "Something went wrong!";
+    res.status(statusCode).render("error.ejs", { err: { message, statusCode } });
 });
 
-app.use((err, req, res, next) => {
-    let { statusCode=500, message="Something went wrong!" } = err;
-    res.status(statusCode).render("error.ejs", { message });
-    // res.status(statusCode).send(message);
+app.use((req, res, next) => {
+    next(new ExpressError(404, "Page Not Found!"));
 });
 
 app.listen(8080, () => {

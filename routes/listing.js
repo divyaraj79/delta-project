@@ -14,7 +14,7 @@ router
     .get(wrapAsync(listingController.index))    
     .post(
         isLoggedIn,
-        upload.single('listing[image]'),
+        upload.array('listing[images]', 10),
         validateListing,
         wrapAsync(listingController.createListing)
     );
@@ -22,13 +22,33 @@ router
 // New Route
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
+// Autocomplete API
+router.get('/autocomplete', async (req, res) => {
+  const query = req.query.q;
+
+  if (!query) {
+    return res.json([]);
+  }
+
+  // Search title/location/country that starts with or contains the query
+  const listings = await Listing.find({
+    $or: [
+      { title: { $regex: query, $options: 'i' } },
+      { location: { $regex: query, $options: 'i' } },
+      { country: { $regex: query, $options: 'i' } },
+    ]
+  }).limit(5).select('title location country'); // limit and project fields
+
+  res.json(listings);
+});
+
 router
     .route("/:id")
     .get(wrapAsync(listingController.showListing))
     .put(
         isLoggedIn, 
         isOwner, 
-        upload.single('listing[image]'),
+        upload.array('listing[images]', 10),
         validateListing, 
         wrapAsync(listingController.updateListing)
     )

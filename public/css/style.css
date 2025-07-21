@@ -131,3 +131,120 @@ body {
     height: 400px;
     width: 80vh;
 } */
+
+.carousel-container {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#prevBtn,
+#nextBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.2s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+#prevBtn:hover,
+#nextBtn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#prevBtn {
+    left: 4px;
+}
+
+#nextBtn {
+    right: 4px;
+}
+
+#carousel-container {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Optional: limit width */
+    margin: 0 auto; /* Optional: center it */
+}
+
+#autocomplete-list {
+  display: none; /* hidden by default */
+  border: 1px solid #ccc; /* silver line */
+  border-top: none; /* remove line above the first suggestion */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  list-style: none;
+  padding-left: 0;
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+
+/* index.ejs styling  */
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter {
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+}
+
+.filter:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+    .filter p {
+        font-size: 0.8rem;
+    }
+
+    .tax-info {
+        display: none;
+    }
+
+.tax-toggle {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 3.25rem;
+    padding: 1rem;
+    margin-left: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+#filters a.filter {
+    color: #555;  /* Light gray */
+}
+
+#filters a.filter:hover {
+    color: black;
+}

@@ -31,13 +31,24 @@ module.exports.isOwner = async (req, res, next) => {
 };
 
 module.exports.validateListing = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body);
-    if(error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    } else {
-        next();
+    const { error } = listingSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        return next(new ExpressError(msg, 400));
     }
+
+    // ✅ Custom validation: Limit total images to max 10
+    const uploadedImages = req.files || [];
+    const existingImages = req.listing ? req.listing.images.length : 0;
+    const imagesToDelete = req.body.deleteImages ? [].concat(req.body.deleteImages) : [];
+
+    const newTotal = existingImages - imagesToDelete.length + uploadedImages.length;
+
+    if (newTotal > 10) {
+        return next(new ExpressError("Cannot have more than 5 images in total.", 400));
+    }
+
+    next();
 };
 
 module.exports.validateReview = (req, res, next) => {

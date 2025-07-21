@@ -8,10 +8,12 @@ const listingSchema = new Schema({
         required: true,
     },
     description: String,
-    image: {
+    images: [
+      {
         url: String,
         filename: String,
-    },
+      }
+    ],
     price: Number,
     location: String,
     country: String,
@@ -24,6 +26,12 @@ const listingSchema = new Schema({
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+    },
+    filter: {
+      type: String,
+      enum: ["Trending", "Mountains", "Lakefront", "Tropical", "Arctic", "Desert", "Iconic cities"],
+      default: null,
+      required: false,
     },
     // geometry: {                               // Added only for Mapbox
     //   type: {
