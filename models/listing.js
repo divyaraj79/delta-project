@@ -29,7 +29,7 @@ const listingSchema = new Schema({
     },
     filter: {
       type: String,
-      enum: ["Trending", "Mountains", "Lakefront", "Tropical", "Arctic", "Desert", "Iconic cities"],
+      enum: ["Trending", "Rooms", "Castles", "Amazing Pools", "Camping", "Farms", "Arctic", "Boats", "Mountains", "Lakefront", "Tropical", "Snow", "Desert", "Iconic cities"],
       default: null,
       required: false,
     },

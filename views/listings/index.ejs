@@ -16,7 +16,7 @@
         <div> <i class="fa-solid fa-bed"></i> </div>
         <p> Rooms </p>
     </a>
-    <a href="/listings?filter=Iconic Cities" class="filter <%= selectedFilter === 'Iconic Cities' ? 'fw-bold text-dark' : '' %>">
+    <a href="/listings?filter=Iconic cities" class="filter <%= selectedFilter === 'Iconic cities' ? 'fw-bold text-dark' : '' %>">
         <div> <i class="fa-solid fa-mountain-city"></i> </div>
         <p> Iconic Cities </p>
     </a>
@@ -40,13 +40,13 @@
         <div> <i class="fa-solid fa-cow"></i> </div>
         <p> Farms </p>
     </a>
-    <a href="/listings?filter=Arctic" class="filter <%= selectedFilter === 'Arctic' ? 'fw-bold text-dark' : '' %>">
+    <a href="/listings?filter=Snow" class="filter <%= selectedFilter === 'Snow' ? 'fw-bold text-dark' : '' %>">
         <div> <i class="fa-regular fa-snowflake"></i> </div>
-        <p> Arctic </p>
+        <p> Snow </p>
     </a>
-    <a href="/listings?filter=Domes" class="filter <%= selectedFilter === 'Domes' ? 'fw-bold text-dark' : '' %>">
+    <a href="/listings?filter=Arctic" class="filter <%= selectedFilter === 'Arctic' ? 'fw-bold text-dark' : '' %>">
         <div> <i class="fa-solid fa-igloo"></i> </div>
-        <p> Domes </p>
+        <p> Arctic </p>
     </a>
     <a href="/listings?filter=Boats" class="filter <%= selectedFilter === 'Boats' ? 'fw-bold text-dark' : '' %>">
         <div> <i class="fa-solid fa-ship"></i> </div>
@@ -70,6 +70,13 @@
     <h5>Search results for "<%= queryTerm %>"</h5>
   </div>
 <% } %>
+
+<% if (allListings.length === 0 && !queryTerm) { %>
+  <div class="text-center mt-4">
+    <h5>No listings found for "<%= selectedFilter %>"</h5>
+  </div>
+<% } %>
+
 
 
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">

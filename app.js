@@ -106,6 +106,10 @@ app.use("/", userRouter);
 //     next(new ExpressError(404, "Page Not Found!"));
 // });
 
+app.use((req, res, next) => {
+    next(new ExpressError(404, "Page Not Found!"));
+});
+
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err;
 
@@ -139,10 +143,6 @@ app.use((err, req, res, next) => {
     // 🔥 Unknown error
     const message = err.message || "Something went wrong!";
     res.status(statusCode).render("error.ejs", { err: { message, statusCode } });
-});
-
-app.use((req, res, next) => {
-    next(new ExpressError(404, "Page Not Found!"));
 });
 
 app.listen(8080, () => {
