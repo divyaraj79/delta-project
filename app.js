@@ -98,6 +98,11 @@ app.use((req, res, next) => {
 //   res.send(registeredUser);
 // });
 
+// ✅ Root route first (important for Google meta verification)
+app.get("/", (req, res) => {
+    res.redirect("/listings"); // or res.render("home");
+});
+
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
