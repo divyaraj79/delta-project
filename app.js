@@ -103,6 +103,11 @@ app.get("/", (req, res) => {
     res.redirect("/listings"); // or res.render("home");
 });
 
+// ✅ Google verification route - must come before routers
+app.get("/googleee3add961647927.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/googleee3add961647927.html"));
+});
+
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
