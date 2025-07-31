@@ -3,6 +3,7 @@
     <div class="col-8 offset-2">
         <h3>Edit your Listing</h3>
         <form id="editForm" method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
@@ -79,7 +80,7 @@
 
             <div class="mb-3 mt-4">
                 <label for="image" class="form-label">Add New Images</label>
-                <input type="file" name="listing[images]" multiple class="form-control">
+                <input type="file" name="listing[images]" multiple class="form-control" accept="image/*">
                 <div class="form-text">You can upload multiple images.</div>
             </div>
 

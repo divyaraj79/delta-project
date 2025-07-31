@@ -7,7 +7,18 @@ const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
 const multer  = require('multer');
 const { storage } = require("../cloudConfig.js");
-const upload = multer({ storage });
+const imageFileFilter = (req, file, cb) => {
+  if (!file.mimetype.startsWith('image/')) {
+    cb(new Error('Only image files are allowed!'), false);
+  } else {
+    cb(null, true);
+  }
+};
+const upload = multer({
+  storage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // 5 MB per file
+});
 
 router
     .route("/")

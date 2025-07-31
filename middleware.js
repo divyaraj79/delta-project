@@ -46,7 +46,7 @@ module.exports.validateListing = (req, res, next) => {
     const newTotal = existingImages - imagesToDelete.length + uploadedImages.length;
 
     if (newTotal > 10) {
-        return next(new ExpressError("Cannot have more than 5 images in total.", 400));
+        return next(new ExpressError("Cannot have more than 10 images in total.", 400));
     }
 
     next();

@@ -1,11 +1,5 @@
 <% layout("/layouts/boilerplate") -%>
 
-<!-- mapbox code 
-<script>
-  const mapToken = "<%= process.env.MAP_TOKEN %>";
-  const listing = <%- JSON.stringify(listing) %>;
-</script> -->
-
 <div class="row mt-3">
     <div class="col-8 offset-3">
         <h3><%= listing.title %></h3>
@@ -46,6 +40,7 @@
         </a>   
                 
         <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn btn-dark offset-5">Delete</button>
         </form>
     </div>
@@ -61,6 +56,7 @@
           novalidate 
           class="needs-validation"
         >
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="mb-3 mt-3">
                 <label for="rating" class="form-label">Rating</label>
                 <fieldset class="starability-slot">
@@ -141,7 +137,9 @@
                     <form 
                         class="mb-3" 
                         method="POST" 
-                        action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                        action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+                    >
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button class="btn btn-sm btn-dark">Delete</button>
                     </form>
                 </div>

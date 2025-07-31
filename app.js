@@ -21,6 +21,9 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const multer = require("multer");
 
+const helmet = require("helmet");
+const csurf = require("csurf");
+
 // const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 const dbUrl = process.env.ATLASDB_URL;
 
@@ -64,6 +67,8 @@ const sessionOptions = {
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // ONLY HTTPS in production
+        sameSite: "lax"
     },
 };
 
@@ -98,6 +103,32 @@ app.use((req, res, next) => {
 //   res.send(registeredUser);
 // });
 
+
+// Security headers
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://use.fontawesome.com"],
+      styleSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://use.fontawesome.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://use.fontawesome.com"],
+      imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+    },
+  })
+);
+
+// CSRF protection (after session)
+app.use(csurf());
+
+// Pass CSRF token to all views
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 // ✅ Root route first (important for Google meta verification)
 app.get("/", (req, res) => {
     res.redirect("/listings"); // or res.render("home");
@@ -127,16 +158,16 @@ app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         if (err.code === "LIMIT_UNEXPECTED_FILE") {
             req.flash("error", "You cannot upload more than 10 images.");
-
-            // Redirect based on source route
-            if (req.originalUrl.includes("/edit")) {
-                const id = req.params?.id || req.body?.id || "";
-                return res.redirect(`/listings/${id}/edit`);
-            }
-            return res.redirect("/listings/new");
+        } else if (err.code === "LIMIT_FILE_SIZE") {
+            req.flash("error", "File size too large. Maximum allowed size is 10 MB.");
+        } else {
+            req.flash("error", err.message);
         }
 
-        req.flash("error", err.message);
+        if (req.originalUrl.includes("/edit")) {
+            const id = req.params?.id || req.body?.id || "";
+            return res.redirect(`/listings/${id}/edit`);
+        }
         return res.redirect("/listings/new");
     }
 
